@@ -16,7 +16,7 @@
 
 #
 # Use this software definition to fix the shebangs of binaries under embedded/bin
-# to point to the embedded ruby.
+# to point to the embedded Python.
 #
 
 name "shebang-cleanup"
@@ -24,9 +24,9 @@ name "shebang-cleanup"
 default_version "0.0.2"
 
 build do
-  block "Update shebangs to point to embedded Ruby" do
+  block "Update shebangs to point to embedded Python" do
     # Fix the shebang for binaries with shebangs that have:
-    # #!/usr/bin/env ruby
+    # #!/usr/bin/env python
     Dir.glob("#{install_dir}/embedded/bin/*") do |bin_file|
       update_shebang = false
       rest_of_the_file = ""
@@ -34,8 +34,8 @@ build do
       File.open(bin_file) do |f|
         shebang = f.readline
         if shebang.start_with?("#!") &&
-            shebang.include?("ruby") &&
-            !shebang.include?("#{install_dir}/embedded/bin/ruby")
+            shebang.include?("python") &&
+            !shebang.include?("#{install_dir}/embedded/bin/python")
           rest_of_the_file = f.read
           update_shebang = true
         end
@@ -43,7 +43,7 @@ build do
 
       if update_shebang
         File.open(bin_file, "w+") do |f|
-          f.puts("#!#{install_dir}/embedded/bin/ruby")
+          f.puts("#!#{install_dir}/embedded/bin/python")
           f.puts(rest_of_the_file)
         end
       end
